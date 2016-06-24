@@ -1,0 +1,101 @@
+@charset "utf-8";
+/*重置样式*/
+body { margin: 0; padding: 0; font-size: 12px; color: #333; font-family: "宋体"; }
+h1, h2, ul, li, p, form, select, option, input { margin: 0; padding: 0; }
+li { list-style: none; }
+a { text-decoration: none; }
+input, select, textarea { outline: none; }
+textarea { resize: none; }
+
+/*页头样式*/
+#header_bg { width: 100%; min-width: 900px; background: url(../img/header_bg.png) repeat-x; }
+#header { width: 900px; height: 30px; margin: 0 auto; position: relative; }
+#header .logo { width: 100px; height: 30px; float:left; }
+#header .logo img { display: block; }
+#header .member { float: right; width: 70px; height: 30px; line-height: 30px; background: url(../img/arrow.png) no-repeat 55px center; cursor: pointer; }
+#header .member:hover { background-image: url(../img/arrow2.png); }
+#header ul { background: #fbf7e1; width: 70px; height: 0; padding-top: 10px; border: 1px solid #999; border-top: none; position: absolute; top: 30px; right:0; display: none; overflow: hidden; filter: alpha(opacity=0); opacity: 0; }
+#header ul li { height: 25px; line-height: 25px; text-align: center; letter-spacing: 1px; }
+#header ul a { display: block; color: #333; background: url(../img/arrow3.gif) no-repeat 8px center; }
+#header ul a:hover { background: #fc0 url(../img/arrow4.gif) no-repeat 8px center; }
+#header .login, #header .reg { float: right; width: 35px; height: 30px; line-height: 30px; cursor: pointer; }
+/*弹出层遮罩*/
+#mask { min-width: 900px; background: #000; filter: alpha(opacity=30); opacity: 0; position: absolute; left: 0; top: 0; z-index: 9998; display: none; }
+/*登录表单样式*/
+#login { width: 350px; height: 250px; border: 1px solid #ccc; position: absolute; display: none; opacity: 0; background: #fff; z-index: 9999; }
+#login h2 { height: 40px; border-bottom: 1px solid #ccc; line-height: 40px; font-size: 14px; text-align: center; letter-spacing: 1px; color: #666; background: url(../img/login_header.png); margin-bottom: 20px; cursor: move; }
+#login h2 img { float: right; position: relative; right: 8px; top: 12px; cursor: pointer; }
+#login .text { width: 200px; height: 25px; border: 1px solid #ccc; background: #fff; }
+#login .user, #login .pass { font-size: 14px; color: #666; padding: 5px 0; text-align: center; }
+#login .btn { text-align: center; padding: 20px 0;  }
+#login .submit { width: 107px; height: 30px; background: url(../img/login_button.png); border: none; cursor: pointer; }
+#login .other { text-align: right; padding: 15px; color: #666; cursor: pointer; }
+/*注册表单样式*/
+#reg { width: 600px; height: 550px; border: 1px solid #ccc; position: absolute; display-: none; opacity-: 0; background: #fff; z-index: 9999; }
+#reg h2 { height: 40px; border-bottom: 1px solid #ccc; line-height: 40px; font-size: 14px; text-align: center; letter-spacing: 1px; color: #666; background: url(../img/login_header.png); margin-bottom: 20px; cursor: move; }
+#reg h2 img { float: right; position: relative; right: 8px; top: 12px; cursor: pointer; }
+#reg ul { font-size: 14px; color: #333; margin: 20px; position: relative; }
+#reg ul li { height: 30px; padding: 5px 0; }
+#reg .text, #reg select { width: 200px; height: 25px; border: 1px solid #ccc; background: #fff; color: #666; text-indent:5px;  }
+#reg select { width: 202px; height: 27px; }
+#reg .birthday select { width: 70px; }
+#reg textarea { width: 360px; height: 100px; background: #fff; border: 1px solid #ccc; }
+#reg .submit { width: 143px; height: 33px; background: url(../img/reg.png) no-repeat; border: none; cursor: pointer; }
+#reg .info, #reg .error, #reg .succ { display: none; width: 165px; height: 32px; line-height: 32px; padding-left: 35px; font-size: 12px; color: #333; background: url(../img/reg_info.png) no-repeat; position: absolute; }
+#reg .error { background: url(../img/reg_error.png) no-repeat; }
+#reg .succ { height: 14px; line-height: 14px; background: url(../img/reg_succ.png) no-repeat; padding-left: 20px; color: green; }
+#reg .info_user { height: 43px; line-height: 18px; padding-top: 7px; background: url(../img/reg_info2.png) no-repeat; top: 3px; left: 295px; }
+#reg .error_user { top: 3px; left: 295px; }
+#reg .succ_user { top: 12px; left: 295px; }
+#reg .info_pass { width: 244px; height: 102px; padding: 4px 0 0 16px; background: url(../img/reg_info3.png) no-repeat; top: 5px; left: 295px; }
+#reg .info_pass p { height: 25px; line-height: 25px; color: #666; font-size: 12px; }
+#reg .info_pass p .s { color: #ccc; }
+#reg .error_pass { top: 43px; left: 295px; }
+#reg .succ_pass { top: 52px; left: 295px; }
+#reg .info_notpass { top: 83px; left: 295px; }
+#reg .error_notpass { top: 83px; left: 295px; }
+#reg .succ_notpass { top: 92px; left: 295px; }
+#reg .info_ans { top: 163px; left: 295px; }
+#reg .error_ans { top: 163px; left: 295px; }
+#reg .succ_ans { top: 172px; left: 295px; }
+#reg .info_email { top: 203px; left: 295px; }
+#reg .error_email { top: 203px; left: 295px; }
+#reg .succ_email { top: 212px; left: 295px; }
+#reg .all_email { width: 180px; height: 190px; padding: 5px 10px; margin:0; border: 1px solid #ccc; background: #fff; position: absolute; top: 231px; left: 70px; display: none; overflow: hidden; }
+#reg .all_email li { height: 20px; padding: 0 5px; border-bottom: 1px solid #e5edf2; font-size: 16px; color: #666; }
+
+/*导航样式*/
+#nav { width: 465px; height: 52px; background: url(../img/nav_bg.png); margin: 50px auto 0 auto; position: relative; }
+#nav ul { position: absolute; left: 20px; z-index: 4; }
+#nav ul li { width: 85px; height: 52px; line-height: 52px; text-align: center; font-weight: bold; float: left; }
+#nav .black { color: #333; position: absolute; left: 20px; z-index: 1; }
+#nav .nav_bg { width: 85px; height: 52px; background: url(../img/nav_over.png) no-repeat 0 11px; position: absolute; left: 20px; z-index: 2; overflow: hidden; }
+#nav .white { color: #fff; position: absolute; left: 0; z-index: 3; }
+/*页面主体样式*/
+#main { width: 900px; margin: 50px auto; }
+/*侧边栏样式*/
+#main .sidebar { width: 250px; height: 500px; float: left; }
+#main .sidebar h2 { width: 248px; height: 30px; line-height: 30px; font-size: 14px; background: url(../img/side_h.png); text-indent: 10px; border: 1px solid #ccc; border-bottom: none; }
+#main .sidebar ul { height: 150px; border: 1px solid #ccc; margin-bottom: 10px; overflow: hidden; }
+#main .sidebar ul li { height: 30px; line-height: 30px; background: url(../img/arrow4.gif) no-repeat 12px center; text-indent: 30px; }
+#main .sidebar ul li a{ color: #333; }
+
+
+#main .index { width: 630px; height: 500px; float: right; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
