@@ -185,6 +185,7 @@ window.onload = function(){
 		confirmPass();
 		ansVerify();
 		emailVerify();
+		birthdayVerify();
 		//用户名验证
 		function userVerify(){
 			var infoUser = getByClass(oForm,'info_user')[0];
@@ -447,6 +448,66 @@ window.onload = function(){
 					oForm.email.value = this.innerText;
 				}
 			}
+		}
+		//生日验证
+		function birthdayVerify(){
+			var birthday = getByClass(oForm,'birthday')[0];
+			var day30 = [4,6,9,11];
+			var day31 = [1,3,5,7,8,10,12];
+			//var str = '';
+			//添加年
+			for( var i = 1950; i < 2017; i++){
+				//方法1
+				// str += '<option value="' + i + '">' + i + '</option>';
+				// 方法2
+				oForm.year.add(new Option(i,i),undefined);
+				// 方法3
+				// var option = document.createElement('option');
+				// option.value = i;
+				// option.innerHTML = i;
+				// oForm.year.appendChild(option);
+			}
+			// oForm.year.innerHTML += str;
+			// 添加月
+			for( var i = 1; i < 13; i++){
+				oForm.month.add(new Option(i,i),undefined);
+			}
+			//添加日
+			oForm.year.onchange = function(){
+				selectDay();
+			}
+			oForm.month.onchange = function(){
+				selectDay();
+			}
+			function selectDay(){
+				if(oForm.year.value != 0 && oForm.month.value != 0){
+					var curDay = 0;
+					//清理注入内容
+					oForm.day.length = 1;
+					if(inArr(day30,parseInt(oForm.month.value))){
+						curDay = 30;
+					}else if(inArr(day31,parseInt(oForm.month.value))){
+						curDay = 31;
+					}else{
+						if(parseInt(oForm.year.value) % 4 == 0 && parseInt(oForm.year.value) % 100 != 0 || parseInt(oForm.year.value) % 400 == 0){
+							curDay = 29;
+						}else{
+							curDay = 28;
+						}
+					}
+					for(var i = 0; i <= curDay; i++){
+						oForm.day.add(new Option(i,i),undefined);
+					}
+				}else{
+					oForm.day.length = 1;
+				}
+			}
+		}
+		function inArr(arr,value){
+			for (var i = 0; i < arr.length; i++) {
+				if(arr[i] === value)return true;
+			}
+			return false;
 		}
 	})();
 	//
