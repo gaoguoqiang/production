@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Document</title>
 <script src="js/base.js"></script>
+<script src="js/ajax.js"></script>
 <script src="js/index.js"></script>
 <link rel="stylesheet" href="css/index.css">
 </head>
@@ -33,6 +34,7 @@
 				<span class="info info_user">请输入用户名，2-20位，由字母、数字和下划线组成！</span>
 				<span class="error error_user">输入不合法，请重新输入！</span>
 				<span class="succ succ_user">可用</span>
+				<span class="loading">正在检测用户名...</span>
 			</li>
 			<li>密　　码：<input type="password" name="pass" class="text">
 				<span class="info info_pass">
@@ -56,6 +58,7 @@
 							<option value="3">- - 您的出生地</option>
 							<option value="4">- - 您最喜欢的明星</option>
 						  </select>
+				<span class="error error_ques">尚未选择！请选择</span>
 			</li>
 			<li>回　　答：<input type="text" name="ans" class="text">
 				<span class="info info_ans">请输入回答，2-32位！</span>
@@ -88,24 +91,28 @@
 						  <select name="day">
 							<option value="0">- 日 -</option>
 						  </select>
+				<span class="error error_birthday">尚未选择！请选择</span>
 			</li>
 			<li style="height: 105px;"><span style="vertical-align: 85px">备　　注：</span><textarea name="ps"></textarea></li>
-			<li style="padding-left: 320px;">还可以输入200字</li>
-			<li style="padding-left: 80px;"><input type="button" class="submit"></li>
+			<li class="ps">还可以输入<strong class="num">200</strong>字</li>
+			<li class="ps" style="display: none;">已超过<strong class="num"></strong>字，<span class="clear">清尾</span></li>
+			<li style="padding-left: 80px;"><input type="button" name="sub" class="submit"></li>
 		</ul>
-	</form>
-	
+	</form>	
 </div>
 <div id="login">
 	<h2><img src="img/close.png" alt="" class="close">会员登陆</h2>
-	<div class="user">账号：<input type="text" name="user" class="text"></div>
-	<div class="pass">密码：<input type="password" name="pass" class="text"></div>
-	<div class="btn"><input type="button" class="submit" value=" "></div>
-	<div class="other">注册新用户 | 忘记密码？</div>
+	<form id="login_form" name="login">
+		<div class="info"></div>
+		<div class="user">账号：<input type="text" name="user" class="text"></div>
+		<div class="pass">密码：<input type="password" name="pass" class="text"></div>
+		<div class="btn"><input type="button" class="submit" name="sub" value=" "></div>
+		<div class="other">注册新用户 | 忘记密码？</div>
+	</form>
 </div>
 <div id="mask"></div>
 <div id="nav">
-	<ul>
+	<ul class="about">
 		<li></li>
 		<li></li>
 		<li></li>
@@ -157,6 +164,85 @@
 		</ul>
 	</div>
 	<div class="index"></div>
+	<div id="banner">
+		<img src="img/banner1.jpg" alt="图片1">
+		<img src="img/banner2.jpg" alt="图片2">
+		<img src="img/banner3.jpg" alt="图片3">
+		<ul>
+			<li>●</li>
+			<li>●</li>
+			<li>●</li>
+		</ul>
+		<span></span>
+		<strong></strong>
+	</div>
+	<div id="photo">
+		<dl>
+			<dt><img -src="img/p1.jpg" bigsrc="img/p1big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+		<dl>
+			<dt><img -src="img/p2.jpg" bigsrc="img/p2big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+		<dl>
+			<dt><img -src="img/p3.jpg" bigsrc="img/p3big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+		<dl>
+			<dt><img -src="img/p4.jpg" bigsrc="img/p4big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+		<dl>
+			<dt><img -src="img/p5.jpg" bigsrc="img/p5big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+		<dl>
+			<dt><img -src="img/p6.jpg" bigsrc="img/p6big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+		<dl>
+			<dt><img -src="img/p7.jpg" bigsrc="img/p7big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+		<dl>
+			<dt><img -src="img/p8.jpg" bigsrc="img/p8big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+		<dl>
+			<dt><img -src="img/p9.jpg" bigsrc="img/p9big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+		<dl>
+			<dt><img -src="img/p10.jpg" bigsrc="img/p10big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+		<dl>
+			<dt><img -src="img/p11.jpg" bigsrc="img/p11big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+		<dl>
+			<dt><img -src="img/p12.jpg" bigsrc="img/p12big.jpg" src="img/wait_load.jpg" alt=""></dt>
+			<dd>图片延迟加载 </dd>
+		</dl>
+	</div>
+
+</div>
+<div id="photo_big">
+	<h2><img src="img/close.png" alt="" class="close">图片预加载</h2>
+	<div class="big">
+		<img src="img/loading.gif" alt="">
+		<span class="btn_prey">&lt</span>
+		<span class="btn_next">&gt</span>
+		<strong class="left_mask"></strong>
+		<strong class="right_mask"></strong>
+	</div>
+</div>
+<div id="loading">
+	<p>加载中</p>
+</div>
+<div id="success">
+	<p>注册成功</p>
 </div>
 <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"5","bdPos":"left","bdTop":"100"},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
 </body>

@@ -32,6 +32,46 @@ function removeClass(obj,className){
 		obj.className = obj.className.replace(new RegExp('(\\s|^)'+className+'\\s|$'),'');
 	}
 }
+//获取/设置自定义属性
+function attr(obj,attr,value){
+	if(value != undefined){
+		obj.setAttribute(attr,value);
+	}else{
+		return obj.getAttribute(attr);
+	}
+}
+//获取offsetTop
+function getTop(obj){
+	var iTop = 0;
+	while(obj){
+		iTop += obj.offsetTop;
+		obj = obj.offsetParent;
+	}
+	return iTop;
+}
+
+function getScroll(attr){
+	return document.documentElement[attr] || document.body[attr];
+}
+//设置遮罩层宽高
+function maskSize(obj){
+	var w = 0;
+	var h = 0;
+	if(window.innerWidth){
+		w = innerWidth + getScroll('scrollLeft');
+		h = innerHeight + getScroll('scrollTop');
+	}else{
+		w = document.documentElement.clientWidth + getScroll('scrollLeft');
+		h = document.documentElement.clientHeight + getScroll('scrollTop');
+	}
+	obj.style.width = w+'px';
+	obj.style.height = h+'px';
+}
+//居中弹出框
+function center(obj){
+	obj.style.left = (document.documentElement.clientWidth-parseInt(getStyle(obj,'width')))/2 + getScroll('scrollLeft')+'px';
+	obj.style.top = (document.documentElement.clientHeight-parseInt(getStyle(obj,'height')))/2 + getScroll('scrollTop')+'px';
+}
 //显示
 function show(obj){
 	obj.style.display = 'block';
@@ -43,6 +83,13 @@ function hide(obj){
 //删除首尾空格
 function trim(str){
 	return str.replace(/(^\s*)|(\s*$)/g,'');
+}
+//匹配数组里的值
+function inArr(arr,value){
+	for (var i = 0; i < arr.length; i++) {
+		if(arr[i] === value)return true;
+	}
+	return false;
 }
 //运动
 function doMove(obj,json,endfn){
@@ -75,10 +122,40 @@ function doMove(obj,json,endfn){
 
 	},30)
 }
-
-
-
-
+//图片延迟加载
+function picLoad(obj){
+	var dH = document.documentElement.clientHeight;
+	var iTop = getScroll('scrollTop');
+	for (var i = 0; i < obj.length; i++) {
+		if(dH + iTop > getTop(obj[i])){
+			attr(obj[i],'src',attr(obj[i],'-src'));
+			doMove(obj[i],{'opacity':100});
+		}
+	}
+}
+//表单序列化
+function serialize(form){
+	var parts = {};
+	for (var i = 0; i < form.elements.length; i++) {
+		var filed = form.elements[i];
+		switch(filed.type){
+			case undefined:
+			case 'submit':
+			case 'reset':
+			case 'file':
+			case 'button':
+				break;
+			case 'radio':
+			case 'checkbox':
+				if(!filed.selected){
+					break;
+				}
+			default:
+				parts[filed.name] = filed.value;
+		}
+	}
+	return parts;
+}
 
 
 

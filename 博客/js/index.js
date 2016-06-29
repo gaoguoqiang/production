@@ -24,7 +24,7 @@ window.onload = function(){
 		}
 		//登陆
 		btnLogin.onclick = function(){
-			maskSize();
+			maskSize(mask);
 			center(login);
 			show(mask);
 			doMove(mask,{'opacity':30});
@@ -34,7 +34,7 @@ window.onload = function(){
 		}
 		//注册
 		btnReg.onclick = function(){
-			maskSize();
+			maskSize(mask);
 			center(reg);
 			show(mask);
 			doMove(mask,{'opacity':30});
@@ -61,33 +61,30 @@ window.onload = function(){
 				hide(login);
 			})
 			document.documentElement.style.overflow = 'auto';
-		}
-		//监听浏览器窗口大小
+		}	
+	})();
+	//浏览器窗口改变触发事件
+	(function(){
+		var login = document.getElementById('login');
+		var reg = document.getElementById('reg');
+		var mask = document.getElementById('mask');
+		var photoBig = document.getElementById('photo_big');
+		var pic = document.getElementById('photo');
+		var aImg = pic.getElementsByTagName('img');
+
 		window.onresize = function(){
 			if(getStyle(mask,'display') == 'block'){
-				maskSize();
+				//重置遮罩层尺寸
+				maskSize(mask);
+				//居中登录框
 				center(login);
+				//居中注册框
 				center(reg);
+				//居中图片加载框
+				center(photoBig)
 			}
-		}
-		//设置遮罩层宽高
-		function maskSize(){
-			var w = 0;
-			var h = 0;
-			if(innerWidth){
-				w = innerWidth;
-				h = innerHeight;
-			}else{
-				w = document.documentElement.clientWidth;
-				h = document.documentElement.clientHeight;
-			}
-			mask.style.width = w+'px';
-			mask.style.height = h+'px';
-		}
-		//居中弹出框
-		function center(obj){
-			obj.style.left = (document.documentElement.clientWidth-parseInt(getStyle(obj,'width')))/2+'px';
-			obj.style.top = (document.documentElement.clientHeight-parseInt(getStyle(obj,'height')))/2+'px';
+			//触发延迟加载
+			picLoad(aImg);
 		}
 	})();
 	//弹出层拖拽
@@ -96,8 +93,11 @@ window.onload = function(){
 		var reg = document.getElementById('reg');
 		var loginTitle = login.getElementsByTagName('h2')[0];
 		var regTitle = reg.getElementsByTagName('h2')[0];
+		var photoBig = document.getElementById('photo_big');
+		var photoTitle = photoBig.getElementsByTagName('h2')[0];
 		drag(loginTitle,login);
 		drag(regTitle,reg);
+		drag(photoTitle,photoBig);
 		//拖拽
 		function drag(obj,parent){
 			obj.onmousedown = function(ev){
@@ -109,15 +109,19 @@ window.onload = function(){
 					var ev = ev || event;
 					var l = ev.clientX-disX;
 					var t = ev.clientY-disY;
-					if(l >= document.documentElement.clientWidth-parent.offsetWidth){
-						l = document.documentElement.clientWidth-parent.offsetWidth;
+					if(l >= document.documentElement.clientWidth+getScroll('scrollLeft')-parent.offsetWidth){
+						l = document.documentElement.clientWidth+getScroll('scrollLeft')-parent.offsetWidth;
 					}else if(l <= 0){
 						l = 0;
+					}else if(l <= getScroll('scrollLeft')){
+						l = getScroll('scrollLeft');
 					}
-					if(t >= document.documentElement.clientHeight-parent.offsetHeight){
-						t = document.documentElement.clientHeight-parent.offsetHeight;
+					if(t >= document.documentElement.clientHeight+getScroll('scrollTop')-parent.offsetHeight){
+						t = document.documentElement.clientHeight+getScroll('scrollTop')-parent.offsetHeight;
 					}else if(t <= 0){
 						t = 0;
+					}else if(t <= getScroll('scrollTop')){
+						t = getScroll('scrollTop');
 					}
 					parent.style.left = l+'px';
 					parent.style.top = t+'px';
@@ -136,7 +140,6 @@ window.onload = function(){
 		var aLi = oUl.getElementsByTagName('li');
 		var navBg = getByClass(nav,'nav_bg')[0];
 		var white = getByClass(nav,'white')[0];
-
 		for (var i = 0; i < aLi.length; i++) {
 			aLi[i].index = i;
 			var l = 0;
@@ -176,21 +179,118 @@ window.onload = function(){
 			}
 		}
 	})();
-	//表单验证
+	//登陆表单验证
+	(function(){
+		var oForm = document.getElementById('login_form');
+		var login = document.getElementById('login');
+		var mask = document.getElementById('mask');
+		var loading = document.getElementById('loading');
+		var loadingText = loading.getElementsByTagName('p')[0];
+		var success = document.getElementById('success');
+		var successText = success.getElementsByTagName('p')[0];
+
+		oForm.sub.onclick = function(){
+			if(/^\w{2,20}$/.test(trim(oForm.user.value)) && oForm.pass.value.length >=6){
+				var _this = this;
+				show(loading);
+				center(loading);
+				loadingText.innerHTML = '正在登陆，请稍候...';
+				_this.disabled = true;
+				_this.style.backgroundPosition = 'right';
+				ajax({
+					method:'post',
+					url:'is_login.php',
+					data:serialize(oForm),
+					success:function(text){
+						hide(loading);
+						if(text == 1){
+							getByClass(oForm,'info')[0].innerHTML = '登陆失败：用户名或密码不正确！';
+						}else{
+							getByClass(oForm,'info')[0].innerHTML = '';
+							show(success);
+							center(success);
+							successText.innerHTML = '登陆成功，请稍候...';
+							setTimeout(function(){
+								hide(success);
+								oForm.reset();
+								doMove(mask,{'opacity':0},function(){
+									hide(mask);
+								});
+								doMove(reg,{'opacity':0},function(){
+									hide(login);
+								});
+								document.documentElement.style.overflow = 'auto';
+							},1500);
+						}
+						_this.disabled = false;
+						_this.style.backgroundPosition = 'left';
+					},
+					async:true
+				})
+			}else{
+				getByClass(oForm,'info')[0].innerHTML = '登陆失败：用户名或密码不合法！';
+			}
+		}
+	})();
+	//注册表单验证
 	(function(){
 		var oForm = document.getElementById('reg_form');
-		
+		var succ = getByClass(oForm,'succ');
+		//----------用户名----------
+		var infoUser = getByClass(oForm,'info_user')[0];
+		var errorUser = getByClass(oForm,'error_user')[0];
+		var succUser = getByClass(oForm,'succ_user')[0];
+		var loadingUser = getByClass(oForm,'loading')[0];
+		//----------密码----------
+		var infoPass = getByClass(oForm,'info_pass')[0];
+		var errorPass = getByClass(oForm,'error_pass')[0];
+		var succPass = getByClass(oForm,'succ_pass')[0];
+		var aQ = getByClass(oForm,'q');
+		var aS = getByClass(oForm,'s');
+		//----------确认密码----------
+		var infoNotPass = getByClass(oForm,'info_notpass')[0];
+		var errorNotPass = getByClass(oForm,'error_notpass')[0];
+		var succNotPass = getByClass(oForm,'succ_notpass')[0];
+		//----------提问----------
+		var errorQues = getByClass(oForm,'error_ques')[0];
+		//----------回答----------
+		var infoAns = getByClass(oForm,'info_ans')[0];
+		var errorAns = getByClass(oForm,'error_ans')[0];
+		var succAns = getByClass(oForm,'succ_ans')[0];
+		//----------邮箱----------
+		var infoEmail = getByClass(oForm,'info_email')[0];
+		var errorEmail = getByClass(oForm,'error_email')[0];
+		var succEmail = getByClass(oForm,'succ_email')[0];
+		var allEmail = getByClass(oForm,'all_email')[0];
+		var aLi = allEmail.getElementsByTagName('li');
+		var aSpan = allEmail.getElementsByTagName('span');
+		//----------生日----------
+		var birthday = getByClass(oForm,'birthday')[0];
+		var errorBirthday = getByClass(oForm,'error_birthday')[0];
+		//----------备注----------
+		var aPs = getByClass(oForm,'ps');
+		var aNum = getByClass(oForm,'num');
+		var clear = getByClass(oForm,'clear')[0];
+		//----------加载中----------
+		var loading = document.getElementById('loading');
+		var loadingText = loading.getElementsByTagName('p')[0];
+		//----------注册成功----------
+		var success = document.getElementById('success');
+		var successText = success.getElementsByTagName('p')[0];
+		//刷新重置表单
+		oForm.reset();
+
 		userVerify();
 		passVerify();
 		confirmPass();
+		quesVerify();
 		ansVerify();
 		emailVerify();
 		birthdayVerify();
+		psVerify();
+		subVerify();
 		//用户名验证
 		function userVerify(){
-			var infoUser = getByClass(oForm,'info_user')[0];
-			var errorUser = getByClass(oForm,'error_user')[0];
-			var succUser = getByClass(oForm,'succ_user')[0];
 			oForm.user.onfocus = function(){
 				show(infoUser);
 				hide(errorUser);
@@ -201,7 +301,7 @@ window.onload = function(){
 					hide(infoUser);
 					hide(errorUser);
 					hide(succUser);
-				}else if(!/^\w{2,20}$/.test(trim(this.value))){
+				}else if(!checkUser()){
 					show(errorUser);
 					hide(infoUser);
 					hide(succUser);
@@ -212,14 +312,34 @@ window.onload = function(){
 				}
 			}
 		}
+		function checkUser(){
+			var onOff = true;
+			if(!/^\w{2,20}$/.test(trim(oForm.user.value))){
+				errorUser.innerHTML = '输入不合法，请重新输入！';
+				return false;
+			}else{
+				show(loadingUser);
+				hide(infoUser);
+				ajax({
+					method:'post',
+					url:'is_user.php',
+					data:serialize(oForm),
+					success:function(text){
+						if(text == 1){
+							errorUser.innerHTML = '用户名被占用，请重新输入！';
+							onOff = false;
+						}else{
+							onOff = true;
+						}
+						hide(loadingUser);
+					},
+					async:false
+				});
+			}
+			return onOff;
+		}
 		//密码验证
 		function passVerify(){
-			var infoPass = getByClass(oForm,'info_pass')[0];
-			var errorPass = getByClass(oForm,'error_pass')[0];
-			var succPass = getByClass(oForm,'succ_pass')[0];
-			var aQ = getByClass(oForm,'q');
-			var aS = getByClass(oForm,'s');
-			
 			oForm.pass.onfocus = function(){
 				show(infoPass);
 				hide(errorPass);
@@ -239,93 +359,90 @@ window.onload = function(){
 				}
 			}
 			oForm.pass.onkeyup = function(){
-				passCheck(this);
+				passCheck();
 			}
-			function passCheck(_this){
-				var value = _this.value;
-				var valueLength = value.length;
-				var codeLength = 0;
-				var onOff = false;
-				//判断是否为6-20个字符
-				if(valueLength >= 6 && valueLength <= 20){
-					aQ[0].innerHTML = '●';
-					aQ[0].style.color = 'green';
-				}else{
-					aQ[0].innerHTML = '○';
-					aQ[0].style.color = '#666';
+		}
+		function passCheck(){
+			var value = oForm.pass.value;
+			var valueLength = value.length;
+			var codeLength = 0;
+			//判断是否为6-20个字符
+			if(valueLength >= 6 && valueLength <= 20){
+				aQ[0].innerHTML = '●';
+				aQ[0].style.color = 'green';
+			}else{
+				aQ[0].innerHTML = '○';
+				aQ[0].style.color = '#666';
+			}
+			//判断是否包含空字符
+			if(valueLength > 0 && !/\s/.test(value)){
+				aQ[1].innerHTML = '●';
+				aQ[1].style.color = 'green';
+			}else{
+				aQ[1].innerHTML = '○';
+				aQ[1].style.color = '#666';
+			}
+			//判断是否为大、小写字母、数字、非空字符，2种以上
+			if(/\d/.test(value)){
+				codeLength ++;
+			}
+			if(/[a-z]/.test(value)){
+				codeLength ++;
+			}
+			if(/[A-Z]/.test(value)){
+				codeLength ++;
+			}
+			if(/[^\w]/.test(value)){
+				codeLength ++;
+			}
+			if(codeLength>=2){
+				aQ[2].innerHTML = '●';
+				aQ[2].style.color = 'green';
+			}else{
+				aQ[2].innerHTML = '○';
+				aQ[2].style.color = '#666';
+			}
+			//判断安全级别
+			if(valueLength >= 10 && codeLength >= 3){
+				for (var i = 0; i < aS.length-1; i++) {
+					aS[i].style.color = 'green';
 				}
-				//判断是否包含空字符
-				if(valueLength > 0 && !/\s/.test(value)){
-					aQ[1].innerHTML = '●';
-					aQ[1].style.color = 'green';
-				}else{
-					aQ[1].innerHTML = '○';
-					aQ[1].style.color = '#666';
+				aS[3].innerHTML = '高';
+				aS[3].style.color = 'green';
+			}else if(valueLength >= 8 && codeLength >= 2){
+				for (var i = 0; i < aS.length-2; i++) {
+					aS[i].style.color = '#f60';
 				}
-				//判断是否为大、小写字母、数字、非空字符，2种以上
-				if(/\d/.test(value)){
-					codeLength ++;
+				aS[2].style.color = '#ccc';
+				aS[3].innerHTML = '中';
+				aS[3].style.color = '#f60';
+			}else if(valueLength >= 1){
+				aS[0].style.color = 'maroon';
+				aS[1].style.color = '#ccc';
+				aS[2].style.color = '#ccc';
+				aS[3].innerHTML = '低';
+				aS[3].style.color = 'maroon';
+			}else{
+				for (var i = 0; i < aS.length-1; i++) {
+					aS[i].style.color = '#ccc';
 				}
-				if(/[a-z]/.test(value)){
-					codeLength ++;
-				}
-				if(/[A-Z]/.test(value)){
-					codeLength ++;
-				}
-				if(/[^\w]/.test(value)){
-					codeLength ++;
-				}
-				if(codeLength>=2){
-					aQ[2].innerHTML = '●';
-					aQ[2].style.color = 'green';
-				}else{
-					aQ[2].innerHTML = '○';
-					aQ[2].style.color = '#666';
-				}
-				//判断安全级别
-				if(valueLength >= 10 && codeLength >= 3){
-					for (var i = 0; i < aS.length-1; i++) {
-						aS[i].style.color = 'green';
-					}
-					aS[3].innerHTML = '高';
-					aS[3].style.color = 'green';
-				}else if(valueLength >= 8 && codeLength >= 2){
-					for (var i = 0; i < aS.length-2; i++) {
-						aS[i].style.color = '#f60';
-					}
-					aS[2].style.color = '#ccc';
-					aS[3].innerHTML = '中';
-					aS[3].style.color = '#f60';
-				}else if(valueLength >= 1){
-					aS[0].style.color = 'maroon';
-					aS[1].style.color = '#ccc';
-					aS[2].style.color = '#ccc';
-					aS[3].innerHTML = '低';
-					aS[3].style.color = 'maroon';
-				}else{
-					for (var i = 0; i < aS.length-1; i++) {
-						aS[i].style.color = '#ccc';
-					}
-					aS[3].innerHTML = '';
-				}
-				if(valueLength >= 6 && valueLength <= 20 && !/\s/.test(value) && codeLength>=2){
-					onOff = true;
-				}
-				return onOff;
+				aS[3].innerHTML = '';
+			}
+			if(valueLength >= 6 && valueLength <= 20 && !/\s/.test(value) && codeLength>=2){
+				return true;
+			}else{
+				return false;
 			}
 		}
 		//确认密码
 		function confirmPass(){
-			var infoNotPass = getByClass(oForm,'info_notpass')[0];
-			var errorNotPass = getByClass(oForm,'error_notpass')[0];
-			var succNotPass = getByClass(oForm,'succ_notpass')[0];
 			oForm.notpass.onfocus = function(){
 				show(infoNotPass);
 				hide(errorNotPass);
 				hide(succNotPass);
 			}
 			oForm.notpass.onblur = function(){
-				if(this.value == oForm.pass.value && oForm.pass.value != ''){
+				if(notpassCheck()){
 					show(succNotPass);
 					hide(errorNotPass);
 					hide(infoNotPass);
@@ -336,11 +453,20 @@ window.onload = function(){
 				}
 			}
 		}
+		function notpassCheck(){
+			if(oForm.notpass.value == oForm.pass.value && oForm.pass.value != '')return true;
+		}
+		//问题验证
+		function quesVerify(){
+			oForm.ques.onchange = function(){
+				if(quesCheck())hide(errorQues);
+			}
+		}
+		function quesCheck(){
+			if(oForm.ques.value != 0)return true;
+		}
 		//回答验证
 		function ansVerify(){
-			var infoAns = getByClass(oForm,'info_ans')[0];
-			var errorAns = getByClass(oForm,'error_ans')[0];
-			var succAns = getByClass(oForm,'succ_ans')[0];
 			oForm.ans.onfocus = function(){
 				show(infoAns);
 				hide(errorAns);
@@ -351,7 +477,7 @@ window.onload = function(){
 					hide(succAns);
 					hide(errorAns);
 					hide(infoAns);
-				}else if(this.value.length >= 2 && this.value.length <= 32){
+				}else if(ansCheck()){
 					hide(errorAns);
 					hide(infoAns);
 					show(succAns);
@@ -362,14 +488,11 @@ window.onload = function(){
 				}
 			}
 		}
+		function ansCheck(){
+			if(oForm.ans.value.length >= 2 && oForm.ans.value.length <= 32)return true;
+		}
 		//邮箱验证
 		function emailVerify(){
-			var infoEmail = getByClass(oForm,'info_email')[0];
-			var errorEmail = getByClass(oForm,'error_email')[0];
-			var succEmail = getByClass(oForm,'succ_email')[0];
-			var allEmail = getByClass(oForm,'all_email')[0];
-			var aLi = allEmail.getElementsByTagName('li');
-			var aSpan = allEmail.getElementsByTagName('span');
 			oForm.email.onfocus = function(){
 				show(infoEmail);
 				hide(errorEmail);
@@ -384,7 +507,7 @@ window.onload = function(){
 					hide(infoEmail);
 					hide(errorEmail);
 					hide(succEmail);
-				}else if(/^[\w\-\.]+\@[\w\-]+(\.[a-zA-Z]{2,4}){1,2}$/.test(this.value)){
+				}else if(emailCheck()){
 					hide(errorEmail);
 					hide(infoEmail);
 					show(succEmail);
@@ -449,12 +572,20 @@ window.onload = function(){
 				}
 			}
 		}
+		function emailCheck(){
+			if(/^[\w\-\.]+\@[\w\-]+(\.[a-zA-Z]{2,4}){1,2}$/.test(oForm.email.value))return true;
+		}
 		//生日验证
 		function birthdayVerify(){
-			var birthday = getByClass(oForm,'birthday')[0];
+			
 			var day30 = [4,6,9,11];
 			var day31 = [1,3,5,7,8,10,12];
 			//var str = '';
+			oForm.day.onchange = function(){
+				if(birthdayCheck()){
+					hide(errorBirthday);
+				}
+			}
 			//添加年
 			for( var i = 1950; i < 2017; i++){
 				//方法1
@@ -495,7 +626,7 @@ window.onload = function(){
 							curDay = 28;
 						}
 					}
-					for(var i = 0; i <= curDay; i++){
+					for(var i = 1; i <= curDay; i++){
 						oForm.day.add(new Option(i,i),undefined);
 					}
 				}else{
@@ -503,14 +634,305 @@ window.onload = function(){
 				}
 			}
 		}
-		function inArr(arr,value){
-			for (var i = 0; i < arr.length; i++) {
-				if(arr[i] === value)return true;
+		function birthdayCheck(){
+			if(oForm.year.value != 0 && oForm.month.value != 0 && oForm.day.value != 0)return true;
+		}
+		//备注字数验证
+		function psVerify(){
+			oForm.ps.onkeyup = function(){
+				checkPs();
 			}
-			return false;
+			//检测粘贴
+			oForm.ps.onpaste = function(){
+				setTimeout(function(){
+					checkPs();
+				},50)
+			}
+			//清尾
+			clear.onclick = function(){
+				oForm.ps.value = oForm.ps.value.substring(0,200);
+				checkPs();
+			}
+			
+		}
+		//检测字数
+		function checkPs(){
+			var num = 200 - oForm.ps.value.length;
+			if(num >= 0){
+				show(aPs[0]);
+				hide(aPs[1]);
+				aNum[0].innerHTML = num;
+				return true;
+			}else{
+				show(aPs[1]);
+				hide(aPs[0]);
+				aNum[1].innerHTML = -num;
+				aNum[1].style.color = 'red';
+				return false;
+			}
+		}
+		//提交验证
+		function subVerify(){
+			oForm.sub.onclick = function(){
+				var onOff = true;
+				if(!checkUser()){
+					show(errorUser);
+					onOff = false;
+				}
+				if(!passCheck()){
+					show(errorPass);
+					onOff = false;
+				}
+				if(!notpassCheck()){
+					show(errorNotPass);
+					onOff = false;
+				}
+				if(!quesCheck()){
+					show(errorQues);
+					onOff = false;
+				}
+				if(!ansCheck()){
+					show(errorAns);
+					onOff = false;
+				}
+				if(!emailCheck()){
+					show(errorEmail);
+					onOff = false;
+				}
+				if(!birthdayCheck()){
+					show(errorBirthday);
+					onOff = false;
+				}
+				if(!checkPs()){
+					onOff = false;
+				}
+				if(onOff){
+					var _this = this;
+					show(loading);
+					center(loading);
+					loadingText.innerHTML = '正在提交注册...';
+					_this.disabled = true;
+					_this.style.backgroundPosition = 'right';
+					ajax({
+						method:'post',
+						url:'add.php',
+						data:serialize(oForm),
+						success:function(text){
+							hide(loading);
+							show(success);
+							center(success);
+							successText.innerHTML = '注册成功，请登录！';
+							setTimeout(function(){
+								hide(success);
+								_this.disabled = false;
+								_this.style.backgroundPosition = 'left';
+								for (var i = 0; i < succ.length; i++) {
+									hide(succ[i]);
+								}
+								oForm.reset();
+								doMove(mask,{'opacity':0},function(){
+									hide(mask);
+								});
+								doMove(reg,{'opacity':0},function(){
+									hide(reg);
+								});
+								document.documentElement.style.overflow = 'auto';
+							},1500);
+
+						},
+						async:true
+					})
+				}
+			}
+			
 		}
 	})();
-	//
+	//图片轮播
+	(function(){
+		var banner = document.getElementById('banner');
+		var aImg = banner.getElementsByTagName('img');
+		var aLi = banner.getElementsByTagName('li');
+		var aStrong = banner.getElementsByTagName('strong')[0];
+
+		function fn(num){
+			for (var i = 0; i < aImg.length; i++) {
+				hide(aImg[i]);
+				aLi[i].index = i;
+				aLi[i].style.color = '#999';
+			}
+			show(aImg[num]);
+			aLi[num].style.color = '#333';
+			aStrong.innerHTML = aImg[num].alt;
+		}
+		fn(0);
+		picAuto()
+		function picAuto(){
+			var timer = null;
+			var num = 0;
+			fn1();
+			function fn1(){
+				clearInterval(timer);
+				timer = setInterval(function(){
+					num ++;
+					if(num >= aImg.length){
+						num = 0;
+					}
+					fn(num);
+				},2000)
+			}
+			banner.onmouseover = function(){
+				clearInterval(timer);
+				for (var i = 0; i < aLi.length; i++) {
+					aLi[i].onmouseover = function(){
+						fn(this.index)
+					}
+					aLi[i].onmouseout = function(){
+						num = this.index;
+					}
+				}
+			}
+			banner.onmouseout = function(){
+				fn1();
+			}
+			
+		}
+	})();
+	//图片延迟加载
+	(function(){
+		var pic = document.getElementById('photo');
+		var aImg = pic.getElementsByTagName('img');
+
+		for (var i = 0; i < aImg.length; i++) {
+			aImg[i].style.opacity = 0;
+			aImg[i].style.filter = 'alpha(opacity=0)';
+		}
+		window.onscroll = function(){
+			picLoad(aImg);	
+		}			
+	})();
+	//图片预加载
+	(function(){
+		var pic = document.getElementById('photo');
+		var aImg = pic.getElementsByTagName('img');
+		var photoBig = document.getElementById('photo_big');
+		var big = getByClass(photoBig,'big')[0];
+		var bigPic = big.getElementsByTagName('img')[0];
+		var leftMask = getByClass(big,'left_mask')[0];
+		var rightMask = getByClass(big,'right_mask')[0];
+		var preyBtn = getByClass(big,'btn_prey')[0];
+		var nextBtn = getByClass(big,'btn_next')[0];
+		var mask = document.getElementById('mask');
+		var close = getByClass(document.body,'close');
+
+		for (var i = 0; i < aImg.length; i++) {
+			aImg[i].index = i;
+			aImg[i].onclick = function(){
+				var oImg = new Image;
+				
+				maskSize(mask);
+				center(photoBig);
+				show(mask);
+				doMove(mask,{'opacity':30});
+				show(photoBig);
+				doMove(photoBig,{'opacity':100});
+				document.documentElement.style.overflow = 'hidden';
+				
+				oImg.onload = function(){
+					bigPic.style.width = '600px';
+					bigPic.style.height = '450px';
+					bigPic.style.top = '0';
+					bigPic.style.opacity = '0';
+					doMove(bigPic,{'opacity':100});
+					attr(bigPic,'src',oImg.src);
+				}
+				oImg.src = attr(this,'bigsrc');
+				prevNextImg(this);
+				// 上一张
+				leftMask.onmouseover = function(){
+					doMove(preyBtn,{'opacity':50});
+				}
+				leftMask.onmouseout = function(){
+					doMove(preyBtn,{'opacity':0});
+				}
+				leftMask.onclick = function(){
+					var nowPic = aImg[attr(bigPic,'index')-1];
+					if(attr(bigPic,'index') == 0){
+						nowPic = aImg[aImg.length-1]
+					}
+					loadinImg(this);
+					prevNextImg(nowPic);
+				}
+				//下一张
+				rightMask.onmouseover = function(){
+					doMove(nextBtn,{'opacity':50});
+				}
+				rightMask.onmouseout = function(){
+					doMove(nextBtn,{'opacity':0});
+				}
+				rightMask.onclick = function(){					
+					var nowPic = aImg[parseInt(attr(bigPic,'index'))+1];
+					if(attr(bigPic,'index') == aImg.length-1){
+						nowPic = aImg[0];
+					}
+					loadinImg(this);
+					prevNextImg(nowPic);
+				}
+				//图片未加载完成时的效果 
+				function loadinImg(_this){
+					//创建临时图片对象
+					var currentImg = new Image;
+					//显示loading图片，并设置样式
+					attr(bigPic,'src','img/loading.gif');
+					bigPic.style.top = '190px';
+					bigPic.style.width = '33px';
+					bigPic.style.height = '33px';
+					//图片加载完成时执行的事件
+					currentImg.onload = function(){
+						bigPic.style.width = '600px';
+						bigPic.style.height = '450px';
+						bigPic.style.top = '0';
+						bigPic.style.opacity = '0';
+						doMove(bigPic,{'opacity':100});
+						attr(bigPic,'src',currentImg.src);
+					}
+					currentImg.src = attr(_this,'src');
+				}
+				//预加载上一张/下一张图片
+				function prevNextImg(obj) {
+					var preyImg = new Image;
+					var nextImg = new Image;
+					var preyIndex = obj.index-1;
+					var nextIndex = obj.index+1;
+					if(obj.index == 0){
+						preyIndex = aImg.length-1;
+					}
+					if(obj.index == aImg.length-1){
+						nextIndex = 0;
+					}
+					preyImg.src = attr(aImg[preyIndex],'bigsrc');
+					nextImg.src = attr(aImg[nextIndex],'bigsrc');
+					attr(leftMask,'src',preyImg.src);
+					attr(rightMask,'src',nextImg.src);
+					attr(bigPic,'index',obj.index);
+				}
+			}
+		}
+		//关闭注册
+		close[2].onclick = function(){
+			doMove(mask,{'opacity':0},function(){
+				hide(mask);
+			})
+			doMove(photoBig,{'opacity':0},function(){
+				hide(photoBig);
+			})
+			document.documentElement.style.overflow = 'auto';
+			attr(bigPic,'src','img/loading.gif');
+			bigPic.style.top = '190px';
+			bigPic.style.width = '33px';
+			bigPic.style.height = '33px';
+		}
+		
+	})();
 }
 
 

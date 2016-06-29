@@ -23,15 +23,16 @@ textarea { resize: none; }
 #mask { min-width: 900px; background: #000; filter: alpha(opacity=30); opacity: 0; position: absolute; left: 0; top: 0; z-index: 9998; display: none; }
 /*登录表单样式*/
 #login { width: 350px; height: 250px; border: 1px solid #ccc; position: absolute; display: none; opacity: 0; background: #fff; z-index: 9999; }
-#login h2 { height: 40px; border-bottom: 1px solid #ccc; line-height: 40px; font-size: 14px; text-align: center; letter-spacing: 1px; color: #666; background: url(../img/login_header.png); margin-bottom: 20px; cursor: move; }
+#login h2 { height: 40px; border-bottom: 1px solid #ccc; line-height: 40px; font-size: 14px; text-align: center; letter-spacing: 1px; color: #666; background: url(../img/login_header.png); cursor: move; }
 #login h2 img { float: right; position: relative; right: 8px; top: 12px; cursor: pointer; }
+#login .info{ padding: 15px 0 5px 0; text-align: center; color: maroon; }
 #login .text { width: 200px; height: 25px; border: 1px solid #ccc; background: #fff; }
 #login .user, #login .pass { font-size: 14px; color: #666; padding: 5px 0; text-align: center; }
-#login .btn { text-align: center; padding: 20px 0;  }
+#login .btn { text-align: center; padding: 15px 0;  }
 #login .submit { width: 107px; height: 30px; background: url(../img/login_button.png); border: none; cursor: pointer; }
 #login .other { text-align: right; padding: 15px; color: #666; cursor: pointer; }
 /*注册表单样式*/
-#reg { width: 600px; height: 550px; border: 1px solid #ccc; position: absolute; display-: none; opacity-: 0; background: #fff; z-index: 9999; }
+#reg { width: 600px; height: 550px; border: 1px solid #ccc; position: absolute; display: none; opacity: 0; background: #fff; z-index: 9999; }
 #reg h2 { height: 40px; border-bottom: 1px solid #ccc; line-height: 40px; font-size: 14px; text-align: center; letter-spacing: 1px; color: #666; background: url(../img/login_header.png); margin-bottom: 20px; cursor: move; }
 #reg h2 img { float: right; position: relative; right: 8px; top: 12px; cursor: pointer; }
 #reg ul { font-size: 14px; color: #333; margin: 20px; position: relative; }
@@ -40,11 +41,12 @@ textarea { resize: none; }
 #reg select { width: 202px; height: 27px; }
 #reg .birthday select { width: 70px; }
 #reg textarea { width: 360px; height: 100px; background: #fff; border: 1px solid #ccc; }
-#reg .submit { width: 143px; height: 33px; background: url(../img/reg.png) no-repeat; border: none; cursor: pointer; }
+#reg .submit { width: 143px; height: 33px; background: url(../img/reg.png) no-repeat left; border: none; cursor: pointer; }
 #reg .info, #reg .error, #reg .succ { display: none; width: 165px; height: 32px; line-height: 32px; padding-left: 35px; font-size: 12px; color: #333; background: url(../img/reg_info.png) no-repeat; position: absolute; }
 #reg .error { background: url(../img/reg_error.png) no-repeat; }
 #reg .succ { height: 14px; line-height: 14px; background: url(../img/reg_succ.png) no-repeat; padding-left: 20px; color: green; }
 #reg .info_user { height: 43px; line-height: 18px; padding-top: 7px; background: url(../img/reg_info2.png) no-repeat; top: 3px; left: 295px; }
+#reg .loading { position: absolute; top: 10px; left: 300px; font-size: 12px; background: url(../img/loading2.gif) no-repeat; text-indent: 22px; display: none; }
 #reg .error_user { top: 3px; left: 295px; }
 #reg .succ_user { top: 12px; left: 295px; }
 #reg .info_pass { width: 244px; height: 102px; padding: 4px 0 0 16px; background: url(../img/reg_info3.png) no-repeat; top: 5px; left: 295px; }
@@ -55,6 +57,7 @@ textarea { resize: none; }
 #reg .info_notpass { top: 83px; left: 295px; }
 #reg .error_notpass { top: 83px; left: 295px; }
 #reg .succ_notpass { top: 92px; left: 295px; }
+#reg .error_ques{ top: 123px; left: 295px; }
 #reg .info_ans { top: 163px; left: 295px; }
 #reg .error_ans { top: 163px; left: 295px; }
 #reg .succ_ans { top: 172px; left: 295px; }
@@ -63,39 +66,59 @@ textarea { resize: none; }
 #reg .succ_email { top: 212px; left: 295px; }
 #reg .all_email { width: 180px; height: 190px; padding: 5px 10px; margin:0; border: 1px solid #ccc; background: #fff; position: absolute; top: 231px; left: 70px; display: none; overflow: hidden; }
 #reg .all_email li { height: 20px; padding: 0 5px; border-bottom: 1px solid #e5edf2; font-size: 16px; color: #666; }
+#reg .error_birthday { top: 241px; left: 300px; }
+#reg .ps{ padding: 0 0 0 300px; height: 20px; }
+#reg .ps .num { padding: 0 2px; }
+#reg .ps .clear { color: #06f; cursor: pointer; }
 
 /*导航样式*/
 #nav { width: 465px; height: 52px; background: url(../img/nav_bg.png); margin: 50px auto 0 auto; position: relative; }
-#nav ul { position: absolute; left: 20px; z-index: 4; }
-#nav ul li { width: 85px; height: 52px; line-height: 52px; text-align: center; font-weight: bold; float: left; }
+#nav ul { position: absolute; }
+#nav ul li { width: 85px; height: 52px; line-height: 52px; text-align: center; font-weight: bold; float: left; cursor: pointer; }
 #nav .black { color: #333; position: absolute; left: 20px; z-index: 1; }
 #nav .nav_bg { width: 85px; height: 52px; background: url(../img/nav_over.png) no-repeat 0 11px; position: absolute; left: 20px; z-index: 2; overflow: hidden; }
-#nav .white { color: #fff; position: absolute; left: 0; z-index: 3; }
+#nav .white { width: 425px; color: #fff; position: absolute; left: 0; z-index: 3; }
+#nav .about { z-index: 4; left: 20px; background: #000; filter: alpha(opacity=0); opacity: 0; }
 /*页面主体样式*/
 #main { width: 900px; margin: 50px auto; }
 /*侧边栏样式*/
-#main .sidebar { width: 250px; height: 500px; float: left; }
+#main .sidebar { width: 250px; float: left; }
 #main .sidebar h2 { width: 248px; height: 30px; line-height: 30px; font-size: 14px; background: url(../img/side_h.png); text-indent: 10px; border: 1px solid #ccc; border-bottom: none; }
 #main .sidebar ul { height: 150px; border: 1px solid #ccc; margin-bottom: 10px; overflow: hidden; }
 #main .sidebar ul li { height: 30px; line-height: 30px; background: url(../img/arrow4.gif) no-repeat 12px center; text-indent: 30px; }
 #main .sidebar ul li a{ color: #333; }
 
+#main .index { width: 630px; height: 500px; float: right; background: #666; }
 
-#main .index { width: 630px; height: 500px; float: right; }
+#banner { float: left; width: 900px; height: 150px; margin: 10px 0; position: relative; }
+#banner img { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
+#banner ul { position: absolute; top: 128px; left: 420px; z-index: 4; }
+#banner ul li { float: left; padding: 0 5px; font-size: 16px; color: #999; cursor: pointer; }
+#banner span { width: 900px; height: 25px; position: absolute; bottom: 0; left: 0; background: #333; filter: alpha(opacity=30); opacity: 0.3; z-index: 3; }
+#banner strong { position: absolute; top: 130px; left: 10px; color: #fff; z-index: 4; }
+
+#photo { float: left; width: 900px; }
+#photo dl { float: left; width: 225px; height: 270px; }
+#photo dl dt { width: 200px; height: 250px; background: #eee; margin: 0 auto; }
+#photo dl dt img { display: block; cursor: pointer; }
+#photo dl dd { height: 25px; line-height: 25px; text-align: center; }
+#photo_big { width: 620px; height: 511px; border: 1px solid #ccc; position: absolute; top: 100px; left: 100px; display: none; opacity: 0; background: #fff; z-index: 9999; }
+#photo_big h2 { height: 40px; border-bottom: 1px solid #ccc; line-height: 40px; font-size: 14px; text-align: center; letter-spacing: 1px; color: #666; background: url(../img/login_header.png); cursor: move; }
+#photo_big h2 img { float: right; position: relative; right: 8px; top: 12px; cursor: pointer; }
+#photo_big .big { width: 620px; height: 460px; }
+#photo_big .big img { display: block; margin: 10px auto 0; position: relative; top: 190px; }
+#photo_big span { width: 100px; height: 100px; background: #000; filter: alpha(opacity=0); opacity: 0; font-size: 80px; font-weight: bold; color: #fff; line-height: 100px; text-align: center; cursor: pointer; position: absolute; }
+#photo_big .big span.btn_prey { top: 220px; left: 10px; }
+#photo_big .big span.btn_next { top: 220px; right: 10px; }
+#photo_big strong { display: block; width: 300px; height: 450px; background: #000; filter: alpha(opacity=0); opacity: 0; cursor: pointer; position: absolute; }
+#photo_big .big strong.left_mask { top: 50px; left: 10px; }
+#photo_big .big strong.right_mask { top: 50px; right: 10px; }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+#loading { position: absolute; width: 200px; height: 40px; background: url(../img/login_header.png); border-bottom: 1px solid #ccc; border-right: 1px solid #ccc; z-index: 10000; display: none; }
+#loading p { height: 40px; line-height: 40px; font-size: 14px; color: #666; font-weight: bold; text-indent: 50px; background: url(../img/loading3.gif) no-repeat 20px center; }
+#success { position: absolute; width: 200px; height: 40px; background: url(../img/login_header.png); border-bottom: 1px solid #ccc; border-right: 1px solid #ccc; z-index: 10000; display: none; }
+#success p { height: 40px; line-height: 40px; font-size: 14px; color: #666; font-weight: bold; text-indent: 50px; background: url(../img/success.gif) no-repeat 20px center; }
 
 
 
